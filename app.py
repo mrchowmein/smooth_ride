@@ -5,6 +5,7 @@ from os import path
 
 sense = SenseHat()
 
+
 def shake():
 
     base_values = get_base_accel()
@@ -14,9 +15,6 @@ def shake():
     sense.set_imu_config(False, False, True)
     red = (255, 0, 0)
     green = (0,255,0)
-
-
-
 
     #green LED means logging
     sense.show_letter(".", text_colour=green)
@@ -53,6 +51,7 @@ def shake():
             record_shake(x, y, z, comfort)
         else:
             sense.clear()
+
 
 def record_shake(x, y, z, condition=None):
     cur_date = datetime.now().strftime("%d%m%Y")
