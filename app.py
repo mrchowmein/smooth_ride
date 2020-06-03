@@ -27,12 +27,12 @@ def shake():
 def record_shake(x, y, z):
     cur_date = datetime.now().strftime("%d%m%Y")
 
-    if not path.exists(f'shake_log{cur_date}.csv'):
+    if not path.exists(f'shake_data/shake_log{cur_date}.csv'):
         with open(f'shake_log{cur_date}.csv', 'w') as f:
             header_writer = csv.writer(f, delimiter=',', )
             header_writer.writerow(['date', 'time', 'x', 'y', 'z']),
 
-    with open(f'shake_log{cur_date}.csv', mode='a') as f:
+    with open(f'shake_data/shake_log{cur_date}.csv', mode='a') as f:
         time_writer = csv.writer(f, delimiter=',', )
         now = datetime.now()
         print(f"{now} {x}, {y}, {z}")
