@@ -2,6 +2,8 @@ from sense_hat import SenseHat
 from datetime import datetime
 import csv
 from os import path
+import time
+
 
 sense = SenseHat()
 
@@ -46,15 +48,16 @@ def shake():
             sense.clear((0,255,0))
             break
 
-        if x > .5 or y > .5 or z > .3:
+        if x > .5 or y > .5 or z > .1:
             sense.show_letter("!", red)
             record_shake(x, y, z, comfort)
         else:
             sense.clear()
 
 
+
 def record_shake(x, y, z, condition=None):
-    cur_date = datetime.now().strftime("%d%m%Y")
+    cur_date = datetime.utcnow().strftime("%d%m%Y")
 
     if not path.exists(f'./shake_data/shake_log{cur_date}.csv'):
         with open(f'./shake_data/shake_log{cur_date}.csv', 'w') as f:
@@ -63,7 +66,7 @@ def record_shake(x, y, z, condition=None):
 
     with open(f'./shake_data/shake_log{cur_date}.csv', mode='a') as f:
         time_writer = csv.writer(f, delimiter=',', )
-        now = datetime.now()
+        now = datetime.utcnow()
         print(f"{now} {x}, {y}, {z},{condition}")
         time_writer.writerow([now.strftime("%d/%m/%Y"), now.strftime("%H:%M:%S.%f"), x, y, z, condition])
 
