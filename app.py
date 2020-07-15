@@ -3,9 +3,11 @@ from datetime import datetime
 import csv
 from os import path
 import time
+import sys
 
 
 sense = SenseHat()
+
 
 
 def shake():
@@ -45,7 +47,9 @@ def shake():
                 comfort = 'FAIR'
                 record_shake(x, y, z, comfort)
         if stop == True:
-            sense.clear((0,255,0))
+            sense.clear()
+            print("Stopped")
+            show_time()
             break
 
         if x > .5 or y > .5 or z > .1:
@@ -85,10 +89,102 @@ def get_base_accel():
     return [x, y, z]
 
 
+def show_time():
+
+    number = [
+        [[0, 1, 1, 1],  # Zero
+         [0, 1, 0, 1],
+         [0, 1, 0, 1],
+         [0, 1, 1, 1]],
+        [[0, 0, 1, 0],  # One
+         [0, 1, 1, 0],
+         [0, 0, 1, 0],
+         [0, 1, 1, 1]],
+        [[0, 1, 1, 1],  # Two
+         [0, 0, 1, 1],
+         [0, 1, 1, 0],
+         [0, 1, 1, 1]],
+        [[0, 1, 1, 1],  # Three
+         [0, 0, 1, 1],
+         [0, 0, 1, 1],
+         [0, 1, 1, 1]],
+        [[0, 1, 0, 1],  # Four
+         [0, 1, 1, 1],
+         [0, 0, 0, 1],
+         [0, 0, 0, 1]],
+        [[0, 1, 1, 1],  # Five
+         [0, 1, 1, 0],
+         [0, 0, 1, 1],
+         [0, 1, 1, 1]],
+        [[0, 1, 0, 0],  # Six
+         [0, 1, 1, 1],
+         [0, 1, 0, 1],
+         [0, 1, 1, 1]],
+        [[0, 1, 1, 1],  # Seven
+         [0, 0, 0, 1],
+         [0, 0, 1, 0],
+         [0, 1, 0, 0]],
+        [[0, 1, 1, 1],  # Eight
+         [0, 1, 1, 1],
+         [0, 1, 1, 1],
+         [0, 1, 1, 1]],
+        [[0, 1, 1, 1],  # Nine
+         [0, 1, 0, 1],
+         [0, 1, 1, 1],
+         [0, 0, 0, 1]]
+    ]
+
+    while True:
+        noNumber = [0, 0, 0, 0]
+
+        hourColor = [255, 0, 0]  # Red
+        minuteColor = [0, 255, 255]  # Cyan
+        empty = [0, 0, 0]  # Black/Off
+
+        clockImage = []
+
+        now = datetime.utcnow()
+        hour = now.hour
+        minute = now.minute
+
+        for index in range(0, 4):
+            if (hour >= 10):
+                clockImage.extend(number[int(hour / 10)][index])
+            else:
+                clockImage.extend(noNumber)
+            clockImage.extend(number[int(hour % 10)][index])
+
+        for index in range(0, 4):
+            clockImage.extend(number[int(minute / 10)][index])
+            clockImage.extend(number[int(minute % 10)][index])
+
+        for index in range(0, 64):
+            if (clockImage[index]):
+                if index < 32:
+                    clockImage[index] = hourColor
+                else:
+                    clockImage[index] = minuteColor
+            else:
+                clockImage[index] = empty
+
+        #sense.set_rotation(90)  # Optional
+        sense.low_light = True  # Optional
+        sense.set_pixels(clockImage)
+
+
+        for event in sense.stick.get_events():
+            if event.direction == 'middle':
+                shake()
+            if event.direction == 'left':
+                sys.exit()
+
+
+
 if __name__ == '__main__':
 
-    green = (0,255,0)
-    sense.clear(green)
+    #green = (0,255,0)
+    sense.clear()
+    show_time()
     sense.stick.direction_middle = shake
 
     while True:
