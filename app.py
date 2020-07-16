@@ -61,7 +61,7 @@ def shake():
 
 
 def record_shake(x, y, z, condition=None):
-    cur_date = datetime.utcnow().strftime("%d%m%Y")
+    cur_date = datetime.utcnow().strftime("%Y%m%d")
 
     if not path.exists(f'./shake_data/shake_log{cur_date}.csv'):
         with open(f'./shake_data/shake_log{cur_date}.csv', 'w') as f:
@@ -72,7 +72,7 @@ def record_shake(x, y, z, condition=None):
         time_writer = csv.writer(f, delimiter=',', )
         now = datetime.utcnow()
         print(f"{now} {x}, {y}, {z},{condition}")
-        time_writer.writerow([now.strftime("%d/%m/%Y"), now.strftime("%H:%M:%S.%f"), x, y, z, condition])
+        time_writer.writerow([now.strftime("%Y%m%d"), now.strftime("%H:%M:%S.%f"), x, y, z, condition])
 
 
 def get_base_accel():
@@ -175,9 +175,6 @@ def show_time():
         for event in sense.stick.get_events():
             if event.direction == 'middle':
                 shake()
-            if event.direction == 'left':
-                sys.exit()
-
 
 
 if __name__ == '__main__':
