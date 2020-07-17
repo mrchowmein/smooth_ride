@@ -38,14 +38,21 @@ def condition_resample(condition : str):
 
 
 
-gps_data_df = load_csv('data_for_processing/gps_data/20200715.csv')
-shake_data_df = load_csv('data_for_processing/shake_data/shake_log20200716.csv')
+gps_data_df = load_csv('data_for_processing/gps_data/20200716.csv')
 
+# dateparse = lambda x: pd.datetime.strptime(x, '%Y%m%d %H:%M:%S')
+#
+# shake_data_df = pd.read_csv('data_for_processing/shake_data/shake_log20200716.csv', header=0, parse_dates={'datetime': ['date', 'time']}, date_parser=dateparse)
+
+
+
+shake_data_df = load_csv('data_for_processing/shake_data/shake_log20200716.csv')
+print(shake_data_df.dtypes)
 gps_data_df['time'] = gps_data_df['time'].str.split('Z').str[0]
 
+#shake_data_df = join_date_time(shake_data_df)
 
-shake_data_df = join_date_time(shake_data_df)
-
+print(shake_data_df.shape[0])
 
 
 #shake_data_rough_df = shake_data_rough_df['time'].str.split('.').str[0]
@@ -56,8 +63,9 @@ shake_data_df = join_date_time(shake_data_df)
 shake_data_df.reset_index().set_index('time')
 # # shake_data_df['time'] = pd.to_datetime(shake_data_df['time'], errors='coerce')
 #
-# print(shake_data_df.columns)
+print(shake_data_df.tail(5))
 shake_data_df['time'] = pd.to_datetime(shake_data_df['time'])
+
 shake_data_df['condition'] = shake_data_df['condition'].astype(str)
 print(shake_data_df.dtypes)
 #shake_data_df = shake_data_df.set_index('datetime').resample('1S').agg({'x': np.mean, 'y': np.mean, 'z' : np.mean, 'condition': ' - '.join})
@@ -91,4 +99,3 @@ create_csv(output_df, f"bumpyroads{cur_time}")
 #
 #
 # print(shake_data_df)
-

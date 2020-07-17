@@ -2,8 +2,10 @@ from sense_hat import SenseHat
 from datetime import datetime
 import csv
 from os import path
+import os
 import time
 import sys
+
 
 
 sense = SenseHat()
@@ -63,16 +65,19 @@ def shake():
 def record_shake(x, y, z, condition=None):
     cur_date = datetime.utcnow().strftime("%Y%m%d")
 
-    if not path.exists(f'./shake_data/shake_log{cur_date}.csv'):
+    ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
+    file_name = os.path.join(ROOT_DIR, f'./shake_data/shake_log{cur_date}.csv')
+
+    if not path.exists(file_name):
         with open(f'./shake_data/shake_log{cur_date}.csv', 'w') as f:
             header_writer = csv.writer(f, delimiter=',', )
-            header_writer.writerow(['date', 'time', 'x', 'y', 'z', 'condition']),
+            header_writer.writerow(['time', 'x', 'y', 'z', 'condition']),
 
-    with open(f'./shake_data/shake_log{cur_date}.csv', mode='a') as f:
+    with open(file_name, mode='a') as f:
         time_writer = csv.writer(f, delimiter=',', )
         now = datetime.utcnow()
         print(f"{now} {x}, {y}, {z},{condition}")
-        time_writer.writerow([now.strftime("%Y%m%d"), now.strftime("%H:%M:%S.%f"), x, y, z, condition])
+        time_writer.writerow([now.strftime("%Y-%m-%dT%H:%M:%S.%f"), x, y, z, condition])
 
 
 def get_base_accel():
